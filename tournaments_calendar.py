@@ -23,6 +23,7 @@ class TournamentsCalendar:
             event.add("dtstamp", datetime.now())
             event.add("uid", id(tournament.title))
             event.add("location", tournament.location)
+            event.add("url", tournament.url)
             event.add("description", _EVENT_DESCRIPTION)
             cal.add_component(event)
         return cal.to_ical()
