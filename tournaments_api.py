@@ -7,6 +7,11 @@ import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, field_validator, model_validator
 
+# Jun 05 - 09, 2024
+_DATE_PATTERN_SAME_MONTH = r"(\w+) (\d+) - (\d+), (\d+)"
+# May 27 - Jun 02, 2024
+_DATE_PATTERN_DIFF_MONTH = r"(\w+) (\d+) - (\w+) (\d+), (\d+)"
+
 
 class Tournament(BaseModel):
     title: str
@@ -25,12 +30,8 @@ class Tournament(BaseModel):
 
     @model_validator(mode="before")
     def _parse_dates(cls, values: dict) -> dict:
-        # Examples:
-        # Jun 05 - 09, 2024
-        # May 27 - Jun 02, 2024
         date = values.pop("date")
-        date_pattern_same_month = r"(\w+) (\d+) - (\d+), (\d+)"
-        match = re.match(date_pattern_same_month, date)
+        match = re.match(_DATE_PATTERN_SAME_MONTH, date)
         if match:
             month, start_day, end_day, year = match.groups()
             values["start_date"] = datetime.strptime(
@@ -41,8 +42,7 @@ class Tournament(BaseModel):
             )
             return values
 
-        date_pattern_diff_month = r"(\w+) (\d+) - (\w+) (\d+), (\d+)"
-        match = re.match(date_pattern_diff_month, date)
+        match = re.match(_DATE_PATTERN_DIFF_MONTH, date)
         if match:
             start_month, start_day, end_month, end_day, year = match.groups()
             values["start_date"] = datetime.strptime(
