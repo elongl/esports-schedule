@@ -5,7 +5,15 @@ from icalendar import Calendar, Event
 from tournaments_api import Tournament
 
 _EVENT_DESCRIPTION = """
-Hello world
+🏆 {title} @ {location}
+👥 Teams playing: {team_count}
+ℹ️ Event info can be found at: {url}
+
+☕️ If you find this useful, please consider buying me a coffee:
+https://www.buymeacoffee.com/sportclimbing
+
+🐛 Report a bug/problem or request a feature:
+elongliks@gmail.com
 """
 
 
@@ -24,10 +32,18 @@ class TournamentsCalendar:
             event.add("uid", id(tournament.title))
             event.add("location", tournament.location)
             event.add("url", tournament.url)
-            event.add("description", _EVENT_DESCRIPTION)
+            event.add("description", self._get_event_description(tournament))
             cal.add_component(event)
         return cal.to_ical()
 
     def write_ical(self, path: str) -> None:
         with open(path, "wb") as f:
             f.write(self.get_ical())
+
+    def _get_event_description(self, tournament: Tournament) -> str:
+        return _EVENT_DESCRIPTION.format(
+            title=tournament.title,
+            location=tournament.location,
+            team_count=tournament.team_count_description,
+            url=tournament.url,
+        )
