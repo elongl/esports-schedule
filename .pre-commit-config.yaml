@@ -8,7 +8,7 @@ repos:
     rev: 5.13.2
     hooks:
       - id: isort
-        args: ['--profile', 'black']
+        args: ["--profile", "black"]
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.1.0
@@ -16,7 +16,7 @@ repos:
       - id: flake8
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: 'v4.0.0-alpha.8'
+    rev: "v4.0.0-alpha.8"
     hooks:
       - id: prettier
 
@@ -31,4 +31,3 @@ repos:
         name: Check for NO_COMMIT marker
         entry: bash -c "git diff --cached -U0 | (! grep NO_COMMIT)"
         language: system
-
