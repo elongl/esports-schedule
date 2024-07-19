@@ -4,7 +4,7 @@
       "name": "Run",
       "type": "debugpy",
       "request": "launch",
-      "program": "main.py",
+      "program": "main_cli.py",
       "console": "integratedTerminal"
     }
   ]
