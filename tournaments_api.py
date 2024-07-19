@@ -68,9 +68,17 @@ class TournamentsApi:
     def _parse_html(self, html: BeautifulSoup) -> list[Tournament]:
         tournaments = []
         tournament_tables = html.find_all("div", class_=["gridTable", "tournamentCard"])
+        if not tournament_tables:
+            raise ValueError("No tournaments found.")
+
         for tournament_table in tournament_tables:
-            for tournament_row in tournament_table.find_all("div", class_="gridRow"):
+            tournament_rows = tournament_table.find_all("div", class_="gridRow")
+            if not tournament_rows:
+                raise ValueError("No tournament rows found.")
+
+            for tournament_row in tournament_rows:
                 tournaments.append(self._parse_row(tournament_row))
+
         return tournaments
 
     def _parse_row(self, tournament_row: BeautifulSoup) -> Tournament:
