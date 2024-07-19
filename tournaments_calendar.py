@@ -6,6 +6,7 @@ from tournaments_api import Tournament
 
 _EVENT_DESCRIPTION = """
 🏆 {title}
+💰 Prize pool: {prize}
 👥 Teams playing: {team_count}
 ℹ️ Event info can be found at: {url}
 
@@ -43,6 +44,7 @@ class TournamentsCalendar:
     def _get_event_description(self, tournament: Tournament) -> str:
         return _EVENT_DESCRIPTION.format(
             title=tournament.title,
+            prize=tournament.prize,
             location=tournament.location,
             team_count=tournament.team_count_description,
             url=tournament.url,
