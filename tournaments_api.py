@@ -62,6 +62,7 @@ class TournamentsApi:
 
     def get(self) -> list[Tournament]:
         resp = requests.get(TournamentsApi._TOURNAMENTS_URL)
+        resp.raise_for_status()
         html = BeautifulSoup(resp.content, "html.parser")
         return self._parse_html(html)
 
