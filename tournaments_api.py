@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from typing import Any
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -14,6 +15,7 @@ class Tournament(BaseModel):
     prize: str
     team_count_description: str
     location: str
+    url: str
 
     @field_validator("*")
     def _clean_str(cls, value: Any) -> Any:
@@ -55,7 +57,8 @@ class Tournament(BaseModel):
 
 
 class TournamentsApi:
-    _TOURNAMENTS_URL = "https://liquipedia.net/counterstrike/S-Tier_Tournaments"
+    _DATASOURCE_URL = "https://liquipedia.net"
+    _TOURNAMENTS_URL = urljoin(_DATASOURCE_URL, "/counterstrike/S-Tier_Tournaments")
 
     def get(self) -> list[Tournament]:
         resp = requests.get(TournamentsApi._TOURNAMENTS_URL)
@@ -71,7 +74,11 @@ class TournamentsApi:
         return tournaments
 
     def _parse_row(self, tournament_row: BeautifulSoup) -> Tournament:
-        title = tournament_row.find("div", class_="gridCell Tournament Header")
+        title = (
+            tournament_row.find("div", class_="gridCell Tournament Header")
+            .find("b")
+            .find("a")
+        )
         date = tournament_row.find("div", class_="gridCell EventDetails Date Header")
         prize = tournament_row.find("div", class_="gridCell EventDetails Prize Header")
         team_count = tournament_row.find(
@@ -80,10 +87,13 @@ class TournamentsApi:
         location = tournament_row.find(
             "div", class_="gridCell EventDetails Location Header"
         )
+        url = urljoin(self._DATASOURCE_URL, title["href"])
+
         return Tournament(
             title=title.text,
             date=date.text,
             prize=prize.text if prize else "TBA",
             team_count_description=team_count.text,
             location=location.text,
+            url=url,
         )
