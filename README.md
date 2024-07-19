@@ -1,3 +1,3 @@
-# Counter-Strike Schedule
+# Esports Schedule
 
-Add Counter-Strike tournaments to your calendar.
+Esports tournaments and events in your calendar.
