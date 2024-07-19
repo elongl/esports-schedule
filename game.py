@@ -6,5 +6,5 @@ class Game(Enum):
     ROCKET_LEAGUE = "rocketleague"
     LEAGUE_OF_LEGENDS = "leagueoflegends"
     VALORANT = "valorant"
-    DOTA2 = "data2"
+    DOTA2 = "dota2"
     APEX_LEGENDS = "apexlegends"
