@@ -132,7 +132,10 @@ class TournamentsApi:
         )
         resp.raise_for_status()
         html = BeautifulSoup(resp.content, "html.parser")
-        return self._parse_html(html)
+        tournaments = self._parse_html(html)
+        if not tournaments:
+            raise ValueError("No tournaments found.")
+        return tournaments
 
     def _parse_html(self, html: BeautifulSoup) -> list[Tournament]:
         tournaments = []
@@ -151,8 +154,6 @@ class TournamentsApi:
             for tournament_row in tournament_rows:
                 tournaments.append(self._parse_row(tournament_row))
 
-        if not tournaments:
-            raise ValueError("No tournaments found.")
         return tournaments
 
     def _parse_row(self, tournament_row: BeautifulSoup) -> Tournament:
