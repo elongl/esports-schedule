@@ -10,7 +10,7 @@ _EVENT_DESCRIPTION = """
 ℹ️ Event info can be found at: {url}
 
 ☕️ If you find this useful, please consider buying me a coffee:
-https://www.buymeacoffee.com/sportclimbing
+https://buymeacoffee.com/elongl
 
 🐛 Report a bug/problem or request a feature:
 elongliks@gmail.com
