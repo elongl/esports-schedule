@@ -1,18 +1,57 @@
-from bs4 import BeautifulSoup
-from pydantic import BaseModel, field_validator
+import re
+from datetime import datetime
+from typing import Any
+
 import requests
+from bs4 import BeautifulSoup
+from pydantic import BaseModel, field_validator, model_validator
 
 
 class Tournament(BaseModel):
     title: str
-    date: str
+    start_date: datetime
+    end_date: datetime
     prize: str
     team_count_description: str
     location: str
 
     @field_validator("*")
-    def _clean_str(cls, value: str) -> str:
-        return value.strip()
+    def _clean_str(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
+    @model_validator(mode="before")
+    def _parse_dates(cls, values: dict) -> dict:
+        # Examples:
+        # Jun 05 - 09, 2024
+        # May 27 - Jun 02, 2024
+        date = values.pop("date")
+        date_pattern_same_month = r"(\w+) (\d+) - (\d+), (\d+)"
+        match = re.match(date_pattern_same_month, date)
+        if match:
+            month, start_day, end_day, year = match.groups()
+            values["start_date"] = datetime.strptime(
+                f"{month} {start_day}, {year}", "%b %d, %Y"
+            )
+            values["end_date"] = datetime.strptime(
+                f"{month} {end_day}, {year}", "%b %d, %Y"
+            )
+            return values
+
+        date_pattern_diff_month = r"(\w+) (\d+) - (\w+) (\d+), (\d+)"
+        match = re.match(date_pattern_diff_month, date)
+        if match:
+            start_month, start_day, end_month, end_day, year = match.groups()
+            values["start_date"] = datetime.strptime(
+                f"{start_month} {start_day}, {year}", "%b %d, %Y"
+            )
+            values["end_date"] = datetime.strptime(
+                f"{end_month} {end_day}, {year}", "%b %d, %Y"
+            )
+            return values
+
+        raise ValueError(f"Invalid date format: {date}")
 
 
 class TournamentsApi:
