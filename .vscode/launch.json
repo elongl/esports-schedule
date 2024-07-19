@@ -5,6 +5,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "main_cli.py",
+      "args": ["counterstrike"],
       "console": "integratedTerminal"
     }
   ]
