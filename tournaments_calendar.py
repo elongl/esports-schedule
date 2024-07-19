@@ -5,7 +5,7 @@ from icalendar import Calendar, Event
 from tournaments_api import Tournament
 
 _EVENT_DESCRIPTION = """
-🏆 {title} @ {location}
+🏆 {title}
 👥 Teams playing: {team_count}
 ℹ️ Event info can be found at: {url}
 
