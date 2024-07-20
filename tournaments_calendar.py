@@ -26,7 +26,7 @@ class TournamentsCalendar:
         cal = Calendar()
         for tournament in self.tournaments:
             event = Event()
-            event.add("summary", tournament.title)
+            event.add("summary", f"[{tournament.tier.value}] {tournament.title}")
             event.add("dtstart", tournament.start_date)
             event.add("dtend", tournament.end_date)
             event.add("dtstamp", datetime.now())

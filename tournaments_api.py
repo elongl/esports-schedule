@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from enum import Enum
 from typing import Any
 from urllib.parse import urljoin
 
@@ -17,6 +18,11 @@ _DATE_PATTERN_SAME_MONTH = r"(\w+) (\d+) - (\d+), (\d+)"
 _DATE_PATTERN_DIFF_MONTH = r"(\w+) (\d+) - (\w+) (\d+), (\d+)"
 
 
+class TournamentTier(Enum):
+    S = "S-Tier"
+    A = "A-Tier"
+
+
 class Tournament(BaseModel):
     title: str
     start_date: datetime
@@ -25,6 +31,7 @@ class Tournament(BaseModel):
     team_count_description: str
     location: str
     url: str
+    tier: TournamentTier
 
     @field_validator("*")
     def _clean_str(cls, value: Any) -> Any:
@@ -103,12 +110,30 @@ _DIV_CLASS_IDS_PRESET2 = TournamentDivClassSelectors(
 class TournamentsApi:
     _DATASOURCE_URL = "https://liquipedia.net"
     _TOURNAMENTS_URL_MAP = {
-        Game.COUNTER_STRIKE: "/counterstrike/S-Tier_Tournaments",
-        Game.ROCKET_LEAGUE: "/rocketleague/S-Tier_Tournaments",
-        Game.LEAGUE_OF_LEGENDS: "/leagueoflegends/S-Tier_Tournaments",
-        Game.VALORANT: "/valorant/S-Tier_Tournaments",
-        Game.DOTA2: "/dota2/Tier_1_Tournaments",
-        Game.APEX_LEGENDS: "/apexlegends/S-Tier_Tournaments",
+        Game.COUNTER_STRIKE: {
+            TournamentTier.S: "/counterstrike/S-Tier_Tournaments",
+            TournamentTier.A: "/counterstrike/A-Tier_Tournaments",
+        },
+        Game.ROCKET_LEAGUE: {
+            TournamentTier.S: "/rocketleague/S-Tier_Tournaments",
+            TournamentTier.A: "/rocketleague/A-Tier_Tournaments",
+        },
+        Game.LEAGUE_OF_LEGENDS: {
+            TournamentTier.S: "/leagueoflegends/S-Tier_Tournaments",
+            TournamentTier.A: "/leagueoflegends/A-Tier_Tournaments",
+        },
+        Game.VALORANT: {
+            TournamentTier.S: "/valorant/S-Tier_Tournaments",
+            TournamentTier.A: "/valorant/A-Tier_Tournaments",
+        },
+        Game.DOTA2: {
+            TournamentTier.S: "/dota2/Tier_1_Tournaments",
+            TournamentTier.A: "/dota2/Tier_2_Tournaments",
+        },
+        Game.APEX_LEGENDS: {
+            TournamentTier.S: "/apexlegends/S-Tier_Tournaments",
+            TournamentTier.A: "/apexlegends/A-Tier_Tournaments",
+        },
     }
 
     _GAME_DIV_CLASS_MAP = {
@@ -124,20 +149,22 @@ class TournamentsApi:
         self.game = game
 
     def get(self) -> list[Tournament]:
-        resp = requests.get(
-            urljoin(
-                self._DATASOURCE_URL,
-                self._TOURNAMENTS_URL_MAP[self.game],
-            )
-        )
-        resp.raise_for_status()
-        html = BeautifulSoup(resp.content, "html.parser")
-        tournaments = self._parse_html(html)
+        tournaments = []
+        for tier, url in self._TOURNAMENTS_URL_MAP[self.game].items():
+            resp = requests.get(urljoin(self._DATASOURCE_URL, url))
+            resp.raise_for_status()
+            html = BeautifulSoup(resp.content, "html.parser")
+            tournaments = self._parse_html(html, tier)
+
         if not tournaments:
             raise ValueError("No tournaments found.")
         return tournaments
 
-    def _parse_html(self, html: BeautifulSoup) -> list[Tournament]:
+    def _parse_html(
+        self,
+        html: BeautifulSoup,
+        tier: TournamentTier,
+    ) -> list[Tournament]:
         tournaments = []
         tournament_tables = self._find_divs_with_classes(
             html,
@@ -152,11 +179,15 @@ class TournamentsApi:
                 self._GAME_DIV_CLASS_MAP[self.game].row,
             )
             for tournament_row in tournament_rows:
-                tournaments.append(self._parse_row(tournament_row))
+                tournaments.append(self._parse_row(tournament_row, tier))
 
         return tournaments
 
-    def _parse_row(self, tournament_row: BeautifulSoup) -> Tournament:
+    def _parse_row(
+        self,
+        tournament_row: BeautifulSoup,
+        tier: TournamentTier,
+    ) -> Tournament:
         title = self._locate_title(tournament_row)
         date = self._find_div_with_classes(
             tournament_row,
@@ -183,6 +214,7 @@ class TournamentsApi:
             team_count_description=team_count.text,
             location=location.text,
             url=url,
+            tier=tier,
         )
 
     def _locate_title(self, tournament_row: BeautifulSoup) -> BeautifulSoup:
