@@ -33,3 +33,8 @@ async def calendar(game: Game):
 @app.get("/")
 async def root():
     return f"Use /calendar/{{game}} where 'game' is one of: {GAME_VALUES}."
+
+
+@app.get("/error-debug")
+async def trigger_error():
+    return 1 / 0
