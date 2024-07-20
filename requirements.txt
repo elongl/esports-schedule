@@ -3,3 +3,5 @@ requests~=2.32
 beautifulsoup4~=4.12
 pydantic~=2.8
 icalendar~=5.0
+sentry-sdk[fastapi]~=2.10
+

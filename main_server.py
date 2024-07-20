@@ -1,3 +1,4 @@
+import os
 import time
 from functools import lru_cache
 
@@ -6,6 +7,17 @@ from fastapi import FastAPI, Response
 from game import GAME_VALUES, Game
 from tournaments_api import TournamentsApi
 from tournaments_calendar import TournamentsCalendar
+
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+
+if SENTRY_DSN:
+    import sentry_sdk
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=1.0,
+        profiles_sample_rate=1.0,
+    )
 
 app = FastAPI()
 
