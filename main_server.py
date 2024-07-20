@@ -3,7 +3,7 @@ from functools import lru_cache
 
 from fastapi import FastAPI, Response
 
-from game import Game
+from game import GAME_VALUES, Game
 from tournaments_api import TournamentsApi
 from tournaments_calendar import TournamentsCalendar
 
@@ -32,4 +32,4 @@ async def calendar(game: Game):
 
 @app.get("/")
 async def root():
-    return "Use /calendar/{game} instead."
+    return f"Use /calendar/{{game}} where 'game' is one of: {GAME_VALUES}."

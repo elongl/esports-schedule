@@ -8,3 +8,6 @@ class Game(Enum):
     VALORANT = "valorant"
     DOTA2 = "dota2"
     APEX_LEGENDS = "apexlegends"
+
+
+GAME_VALUES = [game.value for game in Game]
