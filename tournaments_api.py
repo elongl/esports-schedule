@@ -154,7 +154,7 @@ class TournamentsApi:
             resp = requests.get(urljoin(self._DATASOURCE_URL, url))
             resp.raise_for_status()
             html = BeautifulSoup(resp.content, "html.parser")
-            tournaments = self._parse_html(html, tier)
+            tournaments.extend(self._parse_html(html, tier))
 
         if not tournaments:
             raise ValueError("No tournaments found.")
