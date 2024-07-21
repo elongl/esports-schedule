@@ -40,6 +40,10 @@ class Tournament(BaseModel):
             return value.strip()
         return value
 
+    @field_validator("prize", "location", "team_count_description")
+    def _default_TBA(cls, value: str) -> str:
+        return value or "TBA"
+
     @model_validator(mode="before")
     def _parse_dates(cls, values: dict) -> dict:
         date = values.pop("date")
@@ -214,7 +218,7 @@ class TournamentsApi:
         return Tournament(
             title=title.text,
             date=date.text,
-            prize=prize.text if prize else "TBA",
+            prize=prize.text if prize else None,
             team_count_description=team_count.text,
             location=location.text,
             url=url,
