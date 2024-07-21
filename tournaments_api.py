@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 from typing import Any
 from urllib.parse import urljoin
@@ -25,8 +25,8 @@ class TournamentTier(Enum):
 
 class Tournament(BaseModel):
     title: str
-    start_date: datetime
-    end_date: datetime
+    start_date: date
+    end_date: date
     prize: str
     team_count_description: str
     location: str
@@ -48,7 +48,7 @@ class Tournament(BaseModel):
             month, day, year = match.groups()
             values["start_date"] = datetime.strptime(
                 f"{month} {day}, {year}", "%b %d, %Y"
-            )
+            ).date()
             values["end_date"] = values["start_date"]
             return values
 
@@ -57,10 +57,10 @@ class Tournament(BaseModel):
             month, start_day, end_day, year = match.groups()
             values["start_date"] = datetime.strptime(
                 f"{month} {start_day}, {year}", "%b %d, %Y"
-            )
+            ).date()
             values["end_date"] = datetime.strptime(
                 f"{month} {end_day}, {year}", "%b %d, %Y"
-            )
+            ).date()
             return values
 
         match = re.match(_DATE_PATTERN_DIFF_MONTH, date)
@@ -68,10 +68,10 @@ class Tournament(BaseModel):
             start_month, start_day, end_month, end_day, year = match.groups()
             values["start_date"] = datetime.strptime(
                 f"{start_month} {start_day}, {year}", "%b %d, %Y"
-            )
+            ).date()
             values["end_date"] = datetime.strptime(
                 f"{end_month} {end_day}, {year}", "%b %d, %Y"
-            )
+            ).date()
             return values
 
         raise ValueError(f"Invalid date format: {date}")
