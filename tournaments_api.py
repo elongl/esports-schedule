@@ -6,8 +6,9 @@ from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, ValidationError, field_validator, model_validator
 
+import monitoring
 from game import Game
 
 # Feb 10, 2024
@@ -179,7 +180,10 @@ class TournamentsApi:
                 self._GAME_DIV_CLASS_MAP[self.game].row,
             )
             for tournament_row in tournament_rows:
-                tournaments.append(self._parse_row(tournament_row, tier))
+                try:
+                    tournaments.append(self._parse_row(tournament_row, tier))
+                except ValidationError:
+                    monitoring.report_error()
 
         return tournaments
 
