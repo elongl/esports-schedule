@@ -1,5 +1,5 @@
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Any
 from urllib.parse import urljoin
@@ -54,7 +54,7 @@ class Tournament(BaseModel):
             values["start_date"] = datetime.strptime(
                 f"{month} {day}, {year}", "%b %d, %Y"
             ).date()
-            values["end_date"] = values["start_date"]
+            values["end_date"] = values["start_date"] + timedelta(days=1)
             return values
 
         match = re.match(_DATE_PATTERN_SAME_MONTH, date)
@@ -63,8 +63,9 @@ class Tournament(BaseModel):
             values["start_date"] = datetime.strptime(
                 f"{month} {start_day}, {year}", "%b %d, %Y"
             ).date()
-            values["end_date"] = datetime.strptime(
-                f"{month} {end_day}, {year}", "%b %d, %Y"
+            values["end_date"] = (
+                datetime.strptime(f"{month} {end_day}, {year}", "%b %d, %Y")
+                + timedelta(days=1)
             ).date()
             return values
 
@@ -74,8 +75,9 @@ class Tournament(BaseModel):
             values["start_date"] = datetime.strptime(
                 f"{start_month} {start_day}, {year}", "%b %d, %Y"
             ).date()
-            values["end_date"] = datetime.strptime(
-                f"{end_month} {end_day}, {year}", "%b %d, %Y"
+            values["end_date"] = (
+                datetime.strptime(f"{end_month} {end_day}, {year}", "%b %d, %Y")
+                + timedelta(days=1)
             ).date()
             return values
 
