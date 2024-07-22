@@ -15,7 +15,7 @@ https://buymeacoffee.com/elongl
 
 🐛 Report a bug/problem or request a feature:
 elongliks@gmail.com
-"""
+""".strip()
 
 
 class TournamentsCalendar:
