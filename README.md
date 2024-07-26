@@ -46,3 +46,7 @@ python main_cli.py <GAME>
 ```sh
 pytest -vvv
 ```
+
+## Credits
+
+- **[Liquipedia](https://liquipedia.net)**: Data source of the tournaments.
