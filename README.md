@@ -20,6 +20,13 @@ Copy the desired link, based on the game, into your calendar's subscriptions:
 You'll now see your game's tournaments.  
 Enjoy!
 
+### Subscribing to Calendar
+
+If you're troubling with adding the calendar, you can use these guides.
+
+- **[Google Calendar](https://support.google.com/calendar/answer/37100?hl=en&co=GENIE.Platform%3DDesktop#:~:text=Use%20a%20link%20to%20add%20a%20public%20calendar)**
+- **[Apple Calendar](https://support.apple.com/en-il/guide/calendar/icl1022/mac#:~:text=share%20calendars.-,Subscribe%20to%20a%20calendar,-To%20subscribe%20to)**
+
 ## Setup
 
 ```sh
